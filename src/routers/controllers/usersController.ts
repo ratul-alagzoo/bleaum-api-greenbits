@@ -23,7 +23,7 @@ class UserController {
     //dummy delete
     // Dashboard.collection.drop();
 
-    await User.find({ consumerId: consumerId })
+    await User(process.env.DB_NAME as string).find({ consumerId: consumerId })
       .sort({ _id: -1 })
       .then(async (res) => {
         if (!res) {
@@ -44,7 +44,7 @@ class UserController {
 
   public searchUser = async (consumerId: any, name: any) => {
     let returnData = {};
-    await User.find({
+    await User(process.env.DB_NAME as string).find({
       consumerId: consumerId,
       $or: [
         { name: { $regex: name, $options: "i" } },
@@ -71,7 +71,7 @@ class UserController {
 
   public deleteUser = async (userID: any) => {
     let returnData = {};
-    await User.findOneAndDelete({ userID: userID }).then(async (res: any) => {
+    await User(process.env.DB_NAME as string).findOneAndDelete({ userID: userID }).then(async (res: any) => {
       if (!res) {
         returnData = {
           Message: "Failure",
@@ -93,7 +93,7 @@ class UserController {
     let page = Page >= 1 ? Page : 1;
     page = page - 1;
 
-    await User.find()
+    await User(process.env.DB_NAME as string).find()
       .limit(resultsPerPage)
       .skip(resultsPerPage * page)
       .then(async (results) => {
@@ -115,7 +115,7 @@ class UserController {
   public getUserDetails = async (userID: any) => {
     let returnData = {};
 
-    await User.find({ userID: userID })
+    await User(process.env.DB_NAME as string).find({ userID: userID })
       .then(async (res) => {
         if (!res || res.length === 0) {
           returnData = {
@@ -135,7 +135,7 @@ class UserController {
 
   public checkUserExists = async (firebaseUID: any) => {
     let returnData = {};
-    await User.find({ firebaseUID: firebaseUID })
+    await User(process.env.DB_NAME as string).find({ firebaseUID: firebaseUID })
       .then(async (res) => {
         if (!res || res.length === 0) {
           returnData = {
@@ -155,7 +155,7 @@ class UserController {
 
   public checkUserEmailExists = async (email: any) => {
     let returnData = {};
-    await User.find({ email: email })
+    await User(process.env.DB_NAME as string).find({ email: email })
       .then(async (res) => {
         console.log(res, "user", email);
         if (!res || res.length === 0) {
@@ -177,7 +177,7 @@ class UserController {
   public checkUserMobileNoExists = async (mobileNo: any) => {
     let returnData = {};
     console.log(mobileNo);
-    await User.find({ mobileNo: mobileNo })
+    await User(process.env.DB_NAME as string).find({ mobileNo: mobileNo })
       .then(async (res) => {
         if (!res || res.length === 0) {
           returnData = {
@@ -200,7 +200,7 @@ class UserController {
     SendMail(body.email);
     let returnData = {};
     if (body.email) {
-      await User.find({ email: body.email, password: body.password })
+      await User(process.env.DB_NAME as string).find({ email: body.email, password: body.password })
         .then(async (res) => {
           if (!res || res.length === 0) {
             returnData = {
@@ -216,7 +216,7 @@ class UserController {
         })
         .catch((e) => console.log(e));
     } else if (body.mobileNo) {
-      await User.find({ mobileNo: body.mobileNo, password: body.password })
+      await User(process.env.DB_NAME as string).find({ mobileNo: body.mobileNo, password: body.password })
         .then(async (res) => {
           if (!res || res.length === 0) {
             returnData = {
@@ -238,7 +238,7 @@ class UserController {
 
   public loginUserAuthenticator = async (Email: any) => {
     let returnData = {};
-    await User.find({ email: Email })
+    await User(process.env.DB_NAME as string).find({ email: Email })
       .then(async (res) => {
         if (!res || res.length === 0) {
           returnData = {
@@ -264,7 +264,7 @@ class UserController {
       alphabets: false,
       Symbol: false,
     });
-    let user = await User.find({ mobileNo: body.mobileNo });
+    let user = await User(process.env.DB_NAME as string).find({ mobileNo: body.mobileNo });
     // console.log(otp, 'otp');
     await client.messages
       .create({
@@ -319,7 +319,7 @@ class UserController {
     }
 
     if (Body.firebaseUID) {
-      await User.find({ firebaseUID: Body.firebaseUID }).then(
+      await User(process.env.DB_NAME as string).find({ firebaseUID: Body.firebaseUID }).then(
         async (fire: any) => {
           if (fire.length) {
             returnData = {
@@ -328,7 +328,7 @@ class UserController {
             };
           } else {
             if (Body.mobileNo) {
-              await User.find({ mobileNo: Body.mobileNo }).then(
+              await User(process.env.DB_NAME as string).find({ mobileNo: Body.mobileNo }).then(
                 async (res: any) => {
                   console.log(res, "mobile no response");
                   if (res.length) {
@@ -337,7 +337,7 @@ class UserController {
                       data: "Phone No already exists",
                     };
                   } else {
-                    let user = new User({
+                    let user = new (User(process.env.DB_NAME as string))({
                       firebaseUID: Body.firebaseUID,
                       consumerId: Body.consumerId,
                       userID: nanoid(),
@@ -391,7 +391,7 @@ class UserController {
                 }
               );
             } else {
-              await User.find({ email: Body.email }).then(async (res: any) => {
+              await User(process.env.DB_NAME as string).find({ email: Body.email }).then(async (res: any) => {
                 console.log(res, "Email response");
                 if (res.length) {
                   returnData = {
@@ -399,7 +399,7 @@ class UserController {
                     data: "Email already exists",
                   };
                 } else {
-                  let user = new User({
+                  let user = new (User(process.env.DB_NAME as string))({
                     firebaseUID: Body.firebaseUID,
                     consumerId: Body.consumerId,
                     userID: nanoid(),
@@ -458,7 +458,7 @@ class UserController {
       return await returnData;
     } else {
       if (Body.mobileNo) {
-        await User.find({ mobileNo: Body.mobileNo }).then(async (res: any) => {
+        await User(process.env.DB_NAME as string).find({ mobileNo: Body.mobileNo }).then(async (res: any) => {
           console.log(res, "mobile no response");
           if (res.length) {
             returnData = {
@@ -466,7 +466,7 @@ class UserController {
               data: "Phone No already exists",
             };
           } else {
-            let user = new User({
+            let user = new (User(process.env.DB_NAME as string))({
               firebaseUID: Body.firebaseUID,
               consumerId: Body.consumerId,
               userID: nanoid(),
@@ -520,7 +520,7 @@ class UserController {
           }
         });
       } else {
-        await User.find({ email: Body.email }).then(async (res: any) => {
+        await User(process.env.DB_NAME as string).find({ email: Body.email }).then(async (res: any) => {
           console.log(res, "Email response");
           if (res.length) {
             returnData = {
@@ -528,7 +528,7 @@ class UserController {
               data: "Email already exists",
             };
           } else {
-            let user = new User({
+            let user = new (User(process.env.DB_NAME as string))({
               firebaseUID: Body.firebaseUID,
               consumerId: Body.consumerId,
               userID: nanoid(),
@@ -594,7 +594,7 @@ class UserController {
       coordinates: [Body.longitude, Body.latitude],
     };
     Body.location = loc;
-    await User.findOneAndUpdate({ userID: userID }, Body, { new: true }).then(
+    await User(process.env.DB_NAME as string).findOneAndUpdate({ userID: userID }, Body, { new: true }).then(
       async (res: any) => {
         if (!res) {
           returnData = {
@@ -614,7 +614,7 @@ class UserController {
 
   public getAddress = async (userID: any) => {
     let returnData = {};
-    await User.find({ userID: userID }, { addresses: 1 }).then(
+    await User(process.env.DB_NAME as string).find({ userID: userID }, { addresses: 1 }).then(
       async (res: any) => {
         if (!res) {
           returnData = {
@@ -634,7 +634,7 @@ class UserController {
 
   public getSingleAddress = async (userID: any, addressID: any) => {
     let returnData = {};
-    await User.find(
+    await User(process.env.DB_NAME as string).find(
       { userID: userID, "addresses.addressID": addressID },
       { addresses: 1 }
     ).then(async (res: any) => {
@@ -658,7 +658,7 @@ class UserController {
     let obj = {};
     if (Body.default === true) {
       console.log(Body.default);
-      await User.updateMany(
+      await User(process.env.DB_NAME as string).updateMany(
         { userID: userID },
         { $set: { "addresses.$[].default": false } }
       ).then((res) => {
@@ -680,7 +680,7 @@ class UserController {
       "addresses.$.default": Body.default,
     };
 
-    await User.update(
+    await User(process.env.DB_NAME as string).update(
       { userID: userID, "addresses.addressID": addressID },
       { $set: obj }
     ).then(async (res: any) => {
@@ -701,7 +701,7 @@ class UserController {
 
   public patchAddress = async (userID: any, addressID: any, Body: any) => {
     let returnData = {};
-    await User.updateOne(
+    await User(process.env.DB_NAME as string).updateOne(
       { userID: userID, "addresses.addressID": addressID },
       { $set: Body }
     ).then(async (res: any) => {
@@ -722,7 +722,7 @@ class UserController {
 
   public deleteAddress = async (userID: any, addressID: any) => {
     let returnData = {};
-    await User.updateOne(
+    await User(process.env.DB_NAME as string).updateOne(
       { userID: userID },
       { $pull: { addresses: { addressID: addressID } } }
     ).then(async (res: any) => {
@@ -746,14 +746,14 @@ class UserController {
     Body.addressID = nanoid();
     if (Body.default === true) {
       console.log(Body.default);
-      await User.updateMany(
+      await User(process.env.DB_NAME as string).updateMany(
         { userID: userID },
         { $set: { "addresses.$[].default": false } }
       ).then((res) => {
         console.log(res, "update many");
       });
     }
-    await User.updateOne(
+    await User(process.env.DB_NAME as string).updateOne(
       { userID: userID },
       { $push: { addresses: Body } },
       { addresses: 1 }
@@ -775,7 +775,7 @@ class UserController {
 
   public updatePatchUser = async (userID: any, Body: any) => {
     let returnData = {};
-    await User.updateOne({ userID: userID }, { $set: Body }).then(
+    await User(process.env.DB_NAME as string).updateOne({ userID: userID }, { $set: Body }).then(
       async (res: any) => {
         if (!res) {
           returnData = {

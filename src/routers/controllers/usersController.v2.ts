@@ -31,10 +31,10 @@ class UserControllersV2 {
     }
 
     try {
-      const total = await User.count({ ...filters });
+      const total = await User(process.env.DB_NAME as string).count({ ...filters });
       totalPages = Math.ceil(total / perPage);
       //   console.log("Total pages: ", total);
-      const users = await User.find({ ...filters })
+      const users = await User(process.env.DB_NAME as string).find({ ...filters })
         //@ts-ignore
         .sort({ ...sortFilters })
         .limit(perPage)

@@ -7,7 +7,7 @@ class WishlistController {
     public updateWishList = async(userID: any,Body: any) => {
         let returnData = {}
         console.log(userID, Body);
-        await WishList.findOneAndUpdate({ userID: userID }, Body, { new: true }).then(async (res: any) => {
+        await WishList(process.env.DB_NAME as string).findOneAndUpdate({ userID: userID }, Body, { new: true }).then(async (res: any) => {
             if (!res) {
                 returnData = {
                     'Message': 'Failure',
@@ -27,7 +27,7 @@ class WishlistController {
     public patchWishList = async(userID: any, wishlistID: any, Body: any) => {
         let returnData = {};
         console.log(userID, wishlistID, Body)
-        await WishList.update(
+        await WishList(process.env.DB_NAME as string).update(
         { userID: userID, wishlistID: wishlistID },
         { $set: {"product.quantity": Body.quantity}}
         ).then(async (res: any) => {
@@ -49,7 +49,7 @@ class WishlistController {
 
     public deleteWishList = async(wishListID: any) => {
         let returnData = {}
-        await WishList.findOneAndDelete({ wishlistID: wishListID }).then(async (res: any) => {
+        await WishList(process.env.DB_NAME as string).findOneAndDelete({ wishlistID: wishListID }).then(async (res: any) => {
             if (!res || res.length === 0) {
                 returnData = {
                     'Message': 'Failure',
@@ -68,7 +68,7 @@ class WishlistController {
 
     public getAllWishList = async(userID: any) => {
         let returnData = {}
-        await WishList.find({ userID: userID }).then(async (res: any) => {
+        await WishList(process.env.DB_NAME as string).find({ userID: userID }).then(async (res: any) => {
             // console.log(res);
             if (!res) {
                 returnData = {
@@ -88,7 +88,7 @@ class WishlistController {
 
     public createNewWishList = async(Body: any) => {
         let returnData = {}
-        let wishList = new WishList({
+        let wishList = new (WishList(process.env.DB_NAME as string))({
             userID: Body.userID,
             wishlistID: nanoid(),
             product: Body.product
@@ -119,7 +119,7 @@ class WishlistController {
 
     public deleteAllWishList = async(userID: any) => {
         let returnData = {}
-        await WishList.remove({ userID: userID }).then(async (res: any) => {
+        await WishList(process.env.DB_NAME as string).remove({ userID: userID }).then(async (res: any) => {
             console.log(res);
             if (!res || res.length === 0) {
                 returnData = {

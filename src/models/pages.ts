@@ -33,6 +33,7 @@ const pageSchema = new Schema({
     timestamps: true 
 })
 
-const pages = mongoose.model('Pages', pageSchema);
+const pages = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Pages', pageSchema);
 
 export default pages;

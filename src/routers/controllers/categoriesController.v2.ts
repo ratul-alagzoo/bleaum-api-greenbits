@@ -27,10 +27,10 @@ class CategoriesControllerV2 {
     }
 
     try {
-      const total = await Category.count({ ...filters });
+      const total = await Category(process.env.DB_NAME as string).count({ ...filters });
       totalPages = Math.ceil(total / perPage);
       //   console.log("Total pages: ", total);
-      const categories = await Category.find({ ...filters })
+      const categories = await Category(process.env.DB_NAME as string).find({ ...filters })
         //@ts-ignore
         .sort({ ...sortFilters })
         .limit(perPage)

@@ -27,7 +27,8 @@ const NotificationMetaSchema = new Schema(
   { timestamps: true }
 );
 
-const NotificationMetaDocument = mongoose.model<INotificationMetaDocument>(
+const NotificationMetaDocument = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model<INotificationMetaDocument>(
   "NotificationMeta",
   NotificationMetaSchema
 );

@@ -18,5 +18,6 @@ const PopularAndTrending = new Schema({
 { timestamps: true }
 )
 
-const Model = mongoose.model('popularTrending', PopularAndTrending);
+const Model = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('popularTrending', PopularAndTrending);
 export default Model;

@@ -43,6 +43,7 @@ const DashboardSchema = new Schema({
     { timestamps: true }
 )
 
-const Dashboard = mongoose.model('Dashboard', DashboardSchema)
+const Dashboard = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Dashboard', DashboardSchema)
 
 export default Dashboard;

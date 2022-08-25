@@ -11,7 +11,7 @@ class DealController {
 
   public getAllDeals = async (consumerId: any) => {
     let returnData = {};
-    await Deals.find({ consumerId: consumerId })
+    await Deals(process.env.DB_NAME as string).find({ consumerId: consumerId })
       .then(async (res: any) => {
         console.log(res);
         if (!res) {
@@ -32,7 +32,7 @@ class DealController {
 
   public getSingleDeal = async (dealId: any) => {
     let returnData = {};
-    await Deals.find({ dealId: dealId })
+    await Deals(process.env.DB_NAME as string).find({ dealId: dealId })
       .then(async (res: any) => {
         // console.log(res);
         if (res.length === 0) {
@@ -53,7 +53,7 @@ class DealController {
 
   public getOutletDeal = async (consumerId: any, outletChainId: any) => {
     let returnData = {};
-    await Deals.find({
+    await Deals(process.env.DB_NAME as string).find({
       consumerId: consumerId,
       "selectedOutlets.outletChainID": outletChainId,
     })
@@ -77,7 +77,7 @@ class DealController {
 
   public updateDeal = async (dealId: any, Body: any) => {
     let returnData = {};
-    await Deals.findOneAndUpdate({ dealId: dealId }, Body, { new: true }).then(
+    await Deals(process.env.DB_NAME as string).findOneAndUpdate({ dealId: dealId }, Body, { new: true }).then(
       async (res: any) => {
         console.log(res);
         if (!res || res.length === 0) {
@@ -114,7 +114,7 @@ class DealController {
 
   public deleteDeal = async (dealId: any) => {
     let returnData = {};
-    await Deals.findOneAndDelete({ dealId: dealId }).then(async (res: any) => {
+    await Deals(process.env.DB_NAME as string).findOneAndDelete({ dealId: dealId }).then(async (res: any) => {
       if (!res || res.length === 0) {
         returnData = {
           Message: "Failure",
@@ -132,7 +132,7 @@ class DealController {
 
   public searchDeals = async (consumerId: any, name: any) => {
     let returnData = {};
-    await Deals.find({
+    await Deals(process.env.DB_NAME as string).find({
       consumerId: consumerId,
       name: { $regex: name, $options: "i" },
     })
@@ -156,7 +156,7 @@ class DealController {
 
   public createDeal = async (Body: any) => {
     let returnData = {};
-    let deal = await new Deals({
+    let deal = await new (Deals(process.env.DB_NAME as string))({
       dealId: nanoid(8),
       consumerId: Body.consumerId,
       name: Body.name,

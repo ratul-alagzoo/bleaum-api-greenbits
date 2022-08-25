@@ -55,6 +55,7 @@ const CouponsSchema = new Schema({
   },
 });
 
-const Coupons = mongoose.model("Coupon", CouponsSchema);
+const Coupons = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model("Coupon", CouponsSchema);
 
 export default Coupons;

@@ -35,6 +35,7 @@ const BannerSchema = new Schema({
     { timestamps: true }
 )
 
-const Banner = mongoose.model('Banner', BannerSchema)
+const Banner = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Banner', BannerSchema)
 
 export default Banner;

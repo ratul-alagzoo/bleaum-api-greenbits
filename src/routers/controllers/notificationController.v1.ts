@@ -101,7 +101,7 @@ class NotificationControllerV1 {
     id: string
   ): Promise<boolean> => {
     try {
-      const dataToSave = await NotificationDocument.create({
+      const dataToSave = await NotificationDocument(process.env.DB_NAME as string).create({
         ...dummyNotificationResponse,
         outletChainId: this.outletChainId,
         userId:
@@ -148,7 +148,7 @@ class NotificationControllerV1 {
     // }
     try {
       //check till which date we have to get notifications
-      const metaData = await NotificationMetaDocument.findOne({
+      const metaData = await NotificationMetaDocument(process.env.DB_NAME as string).findOne({
         userId,
         outletChainId: this.outletChainId,
       }).lean();
@@ -156,10 +156,10 @@ class NotificationControllerV1 {
         filters = { ...filters, createdAt: { $gt: metaData.updatedAt } };
       }
 
-      const total = await NotificationDocument.count({ ...filters });
+      const total = await NotificationDocument(process.env.DB_NAME as string).count({ ...filters });
       totalPages = Math.ceil(total / perPage);
       //   console.log("Total pages: ", total);
-      const notifications = await NotificationDocument.find({ ...filters })
+      const notifications = await NotificationDocument(process.env.DB_NAME as string).find({ ...filters })
         //@ts-ignore
         .sort({ ...sortFilters })
         .limit(perPage)
@@ -226,10 +226,10 @@ class NotificationControllerV1 {
     //   sortFilters = { ...sortFilters, createdAt: +latestFirst >= 1 ? -1 : 1 };
     // }
     try {
-      const total = await NotificationDocument.count({ ...filters });
+      const total = await NotificationDocument(process.env.DB_NAME as string).count({ ...filters });
       totalPages = Math.ceil(total / perPage);
       //   console.log("Total pages: ", total);
-      const notifications = await NotificationDocument.find({ ...filters })
+      const notifications = await NotificationDocument(process.env.DB_NAME as string).find({ ...filters })
         //@ts-ignore
         .sort({ ...sortFilters })
         .limit(perPage)
@@ -275,7 +275,7 @@ class NotificationControllerV1 {
     userId: string
   ): Promise<IControllerResponse<any>> => {
     try {
-      await NotificationMetaDocument.findOneAndUpdate(
+      await NotificationMetaDocument(process.env.DB_NAME as string).findOneAndUpdate(
         { userId, outletChainId: this.outletChainId },
         {
           $set: {
@@ -326,14 +326,14 @@ class NotificationControllerV1 {
           { intentTo: { $eq: ENotificationIntent.ALL } },
         ],
       };
-      const data = await NotificationDocument.findOne(
+      const data = await NotificationDocument(process.env.DB_NAME as string).findOne(
         { ...filters },
         {},
         { sort: { createdAt: -1 } }
       ).lean();
       if (data) {
         if (data.intentTo === ENotificationIntent.ALL) {
-          await NotificationDocument.updateOne(
+          await NotificationDocument(process.env.DB_NAME as string).updateOne(
             {
               _id: data._id,
             },
@@ -346,7 +346,7 @@ class NotificationControllerV1 {
             }
           );
         } else {
-          await NotificationDocument.updateOne(
+          await NotificationDocument(process.env.DB_NAME as string).updateOne(
             { _id: data._id },
             { ...data, isSeen: true }
           );
@@ -392,7 +392,7 @@ class NotificationControllerV1 {
   }): Promise<IControllerResponse<any>> => {
     try {
       const { userId, notificationId } = params;
-      const data = await NotificationDocument.findOne({
+      const data = await NotificationDocument(process.env.DB_NAME as string).findOne({
         _id: new Types.ObjectId(notificationId),
       }).lean();
       if (!data) {
@@ -406,7 +406,7 @@ class NotificationControllerV1 {
           },
         };
       }
-      await NotificationDocument.updateOne(
+      await NotificationDocument(process.env.DB_NAME as string).updateOne(
         {
           _id: data._id,
         },
@@ -448,7 +448,7 @@ class NotificationControllerV1 {
   }): Promise<IControllerResponse<any>> => {
     try {
       const { outletChainId, notificationId } = params;
-      await NotificationDocument.deleteOne({
+      await NotificationDocument(process.env.DB_NAME as string).deleteOne({
         outletChainId,
         fromAdmin: true,
         _id: new Types.ObjectId(notificationId),
@@ -482,9 +482,9 @@ class NotificationControllerV1 {
   ): Promise<IControllerResponse<any>> => {
     try {
       const { query, body, outletChainId } = params;
-      let data = null;
+      let data: any;
       if (query.notificationId) {
-        data = await NotificationDocument.findOneAndUpdate(
+        data = await NotificationDocument(process.env.DB_NAME as string).findOneAndUpdate(
           { outletChainId, _id: new Types.ObjectId(query.notificationId) },
           {
             $set: {
@@ -515,7 +515,7 @@ class NotificationControllerV1 {
           }
         );
       } else {
-        const dataToSave = await NotificationDocument.create({
+        const dataToSave = await NotificationDocument(process.env.DB_NAME as string).create({
           outletChainId,
           fromAdmin: true,
           intentTo: ENotificationIntent.ALL,
@@ -594,7 +594,7 @@ class NotificationControllerV1 {
   ) => {
     try {
       //TO DO add outletchainIds here
-      const dbUsers = await User.find({}).lean();
+      const dbUsers = await User(process.env.DB_NAME as string).find({}).lean();
       let users = dbUsers.map((obj) => {
         // console.log(obj);
         return obj.userID;
@@ -642,7 +642,7 @@ class NotificationControllerV1 {
     try {
       if (params.intent === ENotificationIntent.ALL) {
         let notificationSettingsDocument =
-          await NotificationSettingsDocument.findOne({
+          await NotificationSettingsDocument(process.env.DB_NAME as string).findOne({
             outletChainID: params.outletChainId,
           }).lean();
         if (!notificationSettingsDocument) {
@@ -673,7 +673,7 @@ class NotificationControllerV1 {
           },
         };
         // console.log("Notification to save: ", params.meta);
-        let dataToSave = await NotificationDocument.create(notification);
+        let dataToSave = await NotificationDocument(process.env.DB_NAME as string).create(notification);
 
         let data = await dataToSave.save();
         // console.log("Notification inserted");
@@ -693,7 +693,7 @@ class NotificationControllerV1 {
         }
       } else if (params.intent === ENotificationIntent.INDIVIDUAL) {
         let notificationSettingsDocument =
-          await NotificationSettingsDocument.findOne({
+          await NotificationSettingsDocument(process.env.DB_NAME as string).findOne({
             outletChainID: params.outletChainId,
           }).lean();
         if (!notificationSettingsDocument) {
@@ -724,7 +724,7 @@ class NotificationControllerV1 {
           },
         };
         // console.log("Notification to save: ", params.meta);
-        let dataToSave = await NotificationDocument.create(notification);
+        let dataToSave = await NotificationDocument(process.env.DB_NAME as string).create(notification);
 
         let data = await dataToSave.save();
         // console.log("Notification inserted");

@@ -121,7 +121,8 @@ const OutletChainAdminSchema = new Schema(
   }
 );
 
-const OutletChainAdmin = mongoose.model(
+const OutletChainAdmin = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model(
   "OutletChainAdmin",
   OutletChainAdminSchema
 );

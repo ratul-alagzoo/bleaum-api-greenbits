@@ -7,11 +7,11 @@ class OutletChainAdminController {
 
   public loginOutletChainAdmin = async (Body: any) => {
     let returnData = {};
-    let chainAdmin = await OutletChainAdmin.find({ adminEmail: Body.email });
-    let outletAdmin = await OutletChain.find({ adminEmail: Body.email });
+    let chainAdmin = await OutletChainAdmin(process.env.DB_NAME as string).find({ adminEmail: Body.email });
+    let outletAdmin = await OutletChain(process.env.DB_NAME as string).find({ adminEmail: Body.email });
     if (chainAdmin.length > 0) {
       // console.log(chainAdmin, 'chain')
-      await OutletChainAdmin.find({
+      await OutletChainAdmin(process.env.DB_NAME as string).find({
         adminEmail: Body.email,
         adminPassword: Body.password,
       })
@@ -33,7 +33,7 @@ class OutletChainAdminController {
         .catch((e) => console.log(e));
     } else if (outletAdmin.length > 0) {
       // console.log(outletAdmin, 'outlet')
-      await OutletChain.find({
+      await OutletChain(process.env.DB_NAME as string).find({
         adminEmail: Body.email,
         adminPassword: Body.password,
       })
@@ -85,7 +85,7 @@ class OutletChainAdminController {
   public getOutletDetails = async (consumerId: any) => {
     let returnData = {};
     console.log(consumerId);
-    await OutletChainAdmin.find({ consumerId: consumerId })
+    await OutletChainAdmin(process.env.DB_NAME as string).find({ consumerId: consumerId })
       .then(async (res) => {
         if (!res || res.length === 0) {
           returnData = {
@@ -105,7 +105,7 @@ class OutletChainAdminController {
 
   public getOutletChainAdmin = async (adminID: any) => {
     let returnData = {};
-    await OutletChainAdmin.find({ adminID: adminID }).then(async (res: any) => {
+    await OutletChainAdmin(process.env.DB_NAME as string).find({ adminID: adminID }).then(async (res: any) => {
       if (!res) {
         returnData = {
           Message: "Failure",
@@ -123,7 +123,7 @@ class OutletChainAdminController {
 
   public updateOutletChainAdmin = async (adminID: any, Body: any) => {
     let returnData = {};
-    await OutletChainAdmin.findOneAndUpdate({ adminID: adminID }, Body, {
+    await OutletChainAdmin(process.env.DB_NAME as string).findOneAndUpdate({ adminID: adminID }, Body, {
       new: true,
     }).then(async (res: any) => {
       if (!res) {

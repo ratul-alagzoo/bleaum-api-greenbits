@@ -6,7 +6,7 @@ class MembershipController {
 
     public getAllMemberships = async(consumerID: any) => {
         let returnData = {};
-        await Membership.find({consumerID: consumerID}).then(async (res:any) => {
+        await Membership(process.env.DB_NAME as string).find({consumerID: consumerID}).then(async (res:any) => {
             if(!res){
                 returnData = {
                     'Message': 'Failure',
@@ -25,7 +25,7 @@ class MembershipController {
 
     public getSingleMembership = async(membershipID: any) => {
         let returnData = {};
-        await Membership.find({membershipID: membershipID}).then(async (res:any) => {
+        await Membership(process.env.DB_NAME as string).find({membershipID: membershipID}).then(async (res:any) => {
             if(!res){
                 returnData = {
                     'Message': 'Failure',
@@ -44,7 +44,7 @@ class MembershipController {
 
     public createNewMembership = async(body: any) => {
         let returnData = {};
-        let membership = await new Membership({
+        let membership = await new (Membership(process.env.DB_NAME as string))({
             membershipID: nanoid(),
             consumerID: body.consumerID,
             name: body.name,
@@ -74,7 +74,7 @@ class MembershipController {
 
     public updateMembership = async(membershipID: any, body: any) => {
         let returnData = {};
-        await Membership.findOneAndUpdate({membershipID: membershipID}, body, {new: true}).then(async (res:any) => {
+        await Membership(process.env.DB_NAME as string).findOneAndUpdate({membershipID: membershipID}, body, {new: true}).then(async (res:any) => {
             if(!res){
                 returnData = {
                     'Message': 'Failure',

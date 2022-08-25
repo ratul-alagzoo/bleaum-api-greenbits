@@ -31,10 +31,10 @@ class InventoryControllerV2 {
     }
 
     try {
-      const total = await Inventory.count({ ...filters });
+      const total = await Inventory(process.env.DB_NAME as string).count({ ...filters });
       totalPages = Math.ceil(total / perPage);
       //   console.log("Total pages: ", total);
-      const inventories = await Inventory.find({ ...filters })
+      const inventories = await Inventory(process.env.DB_NAME as string).find({ ...filters })
         //@ts-ignore
         .sort({ ...sortFilters })
         .limit(perPage)
@@ -83,7 +83,7 @@ class InventoryControllerV2 {
         lowerCBDLimit: 0,
       };
 
-      const allInventories = await Inventory.find().lean();
+      const allInventories = await Inventory(process.env.DB_NAME as string).find().lean();
 
       limits = allInventories.reduce(
         (acc, data) => {

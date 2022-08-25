@@ -22,6 +22,7 @@ const loyaltyPointSchema = new Schema(
   { timestamps: true }
 );
 
-const loyaltyPoints = mongoose.model("LoyaltyPoint", loyaltyPointSchema);
+const loyaltyPoints = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model("LoyaltyPoint", loyaltyPointSchema);
 
 export default loyaltyPoints;

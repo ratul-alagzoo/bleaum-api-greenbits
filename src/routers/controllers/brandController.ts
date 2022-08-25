@@ -7,7 +7,7 @@ class BrandController {
 
     public getAllBrands = async() => {
         let returnData = {};
-        await Brand.find().then(async (res:any) => {
+        await Brand(process.env.DB_NAME as string).find().then(async (res:any) => {
             if(!res){
                 returnData = {
                     'Message': 'Failure',
@@ -29,7 +29,7 @@ class BrandController {
         const resultsPerPage = 30;
         let page = Page >= 1 ? Page : 1;
         page = page - 1;
-        await Brand.find()
+        await Brand(process.env.DB_NAME as string).find()
         .limit(resultsPerPage)
         .skip(resultsPerPage * page)
         .then(async (res:any) => {
@@ -51,7 +51,7 @@ class BrandController {
 
     public searchByBrand = async(Name: any) => {
         let returnData = {};
-        await Brand.find({name: {$regex: Name, $options: 'i'}})
+        await Brand(process.env.DB_NAME as string).find({name: {$regex: Name, $options: 'i'}})
         .limit(5)
         .then(async (res:any) => {
             console.log(res);
@@ -73,7 +73,7 @@ class BrandController {
 
     public updateBrand = async(brandID: any, Body: any) => {
         let returnData = {}
-    await Brand.findOneAndUpdate({brandID: brandID}, Body, {new:true}).then(async (res: any) => {
+    await Brand(process.env.DB_NAME as string).findOneAndUpdate({brandID: brandID}, Body, {new:true}).then(async (res: any) => {
         if(!res){
           returnData = {
             'Message': 'Failure',
@@ -92,7 +92,7 @@ class BrandController {
     
     public getSingleBrand = async(brandID: any) => {
         let returnData = {};
-        await Brand.find({brandID: brandID}).then(async (res:any) => {
+        await Brand(process.env.DB_NAME as string).find({brandID: brandID}).then(async (res:any) => {
             // console.log(res);
             if(res.length === 0){
                 returnData = {
@@ -114,7 +114,7 @@ class BrandController {
         let returnData: any = {};
         let brands: any = [];
         // console.log(outletId);
-        await Brand.find({}, {countInventory:{ $elemMatch: { outletChainID: outletId} },brandID: 1, name: 1, slug: 1, image: 1, status: 1 })
+        await Brand(process.env.DB_NAME as string).find({}, {countInventory:{ $elemMatch: { outletChainID: outletId} },brandID: 1, name: 1, slug: 1, image: 1, status: 1 })
         .then(async (res:any) => {
             // console.log(res);
             await res.map((obj: any) => {
@@ -150,7 +150,7 @@ class BrandController {
         console.log(filtered, 'filtered brands', filtered.length)
         for(let i=0; i< filtered.length; i++){
             // console.log(Body.json[i], `body${i}`);
-            await Brand.findOneAndUpdate({brandID: filtered[i].brandID}, filtered[i], {new: true}).then(async (res:any) => {
+            await Brand(process.env.DB_NAME as string).findOneAndUpdate({brandID: filtered[i].brandID}, filtered[i], {new: true}).then(async (res:any) => {
                 if(!res || res.length === 0){
                     sampleArray.push(filtered[i])
                 }
@@ -160,7 +160,7 @@ class BrandController {
             
         }
         // console.log(sampleArray, 'sample Brands');
-        await Brand.insertMany(sampleArray).then(async(response) => {
+        await Brand(process.env.DB_NAME as string).insertMany(sampleArray).then(async(response) => {
             // console.log(response, 'response');
             if(!response || response.length === 0){
                 returnData = {

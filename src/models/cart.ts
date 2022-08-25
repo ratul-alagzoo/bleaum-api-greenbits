@@ -34,6 +34,7 @@ const CartSchema = new Schema({
     { timestamps: true }
 )
 
-const Cart = mongoose.model('Cart', CartSchema)
+const Cart = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Cart', CartSchema)
 
 export default Cart;

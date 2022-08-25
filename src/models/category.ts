@@ -1,44 +1,46 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-const CategorySchema = new Schema({
+const CategorySchema = new Schema(
+  {
     categoryID: {
-        type:String, 
-        required: true
+      type: String,
+      required: true,
     },
-    name:{
-        type: String,
-        required: true
+    name: {
+      type: String,
+      required: true,
     },
-    slug:{
-        type: String,
+    slug: {
+      type: String,
     },
     parentCategory: {
-        type: String,
-        default: null,
+      type: String,
+      default: null,
     },
     image: {
-        type: String,
-        default:''
+      type: String,
+      default: "",
     },
-    status:{
-        type:Boolean,
-        default: false
+    status: {
+      type: Boolean,
+      default: false,
     },
     productCount: {
-        type: Number,
-        default:0
+      type: Number,
+      default: 0,
     },
     countInventory: {
-        type: Array
+      type: Array,
     },
     filters: {
-        type: Array
-    }
-},
-    { timestamps: true }
-)
+      type: Array,
+    },
+  },
+  { timestamps: true }
+);
 
-const Category = mongoose.model('Category', CategorySchema)
+const Category = (dbName: string) =>
+  mongoose.connection.useDb(dbName).model("Category", CategorySchema);
 
 export default Category;

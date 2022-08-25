@@ -58,6 +58,7 @@ const CannabisSchema = new Schema({
     { timestamps: true }
 )
 
-const Cannabis = mongoose.model('Cannabis', CannabisSchema)
+const Cannabis = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Cannabis', CannabisSchema)
 
 export default Cannabis;

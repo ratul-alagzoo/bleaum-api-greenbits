@@ -12,7 +12,7 @@ class LoyaltyController {
     //   let { status, ...others } = queries;
     //   queries = { ...others };
     // }
-    await Loyalty.findOne({ consumerId: consumerId })
+    await Loyalty(process.env.DB_NAME as string).findOne({ consumerId: consumerId })
       .then(async (res: any) => {
         if (!res) {
           returnData = {
@@ -33,7 +33,7 @@ class LoyaltyController {
   public updateLoyalty = async (loyaltyID: any, consumerId: any, body: any) => {
     let returnData = {};
     let I_D = "loyaltyID";
-    await Loyalty.findOneAndUpdate(
+    await Loyalty(process.env.DB_NAME as string).findOneAndUpdate(
       { loyaltyID: loyaltyID, consumerId: consumerId },
       {
         ...body,
@@ -69,7 +69,7 @@ class LoyaltyController {
     let returnData = {};
     let data: any = {};
     data[day] = body.value;
-    await Loyalty.findOneAndUpdate(
+    await Loyalty(process.env.DB_NAME as string).findOneAndUpdate(
       { loyaltyID: loyaltyID, consumerId: consumerId },
       data,
       {
@@ -96,7 +96,7 @@ class LoyaltyController {
   public createLoyalty = async (Body: any) => {
     let returnData = {};
 
-    let calander = await new Loyalty({
+    let calander = await new (Loyalty(process.env.DB_NAME as string))({
       outletChainID: process.env.MENU_KEY,
       loyaltyID: nanoid(8),
       consumerId: Body.consumerId,

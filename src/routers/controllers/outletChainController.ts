@@ -10,7 +10,7 @@ class OutletChainController {
   public getAllOutletChains = async (consumerId: any) => {
     let returnData = {};
     // console.log(consumerId);
-    const getOutletAdminDetails = await OutletChainAdmin.findOne({
+    const getOutletAdminDetails = await OutletChainAdmin(process.env.DB_NAME as string).findOne({
       consumerId: consumerId,
     });
     console.log("details admin", getOutletAdminDetails);
@@ -20,7 +20,7 @@ class OutletChainController {
         data: [getOutletAdminDetails],
       };
     } else {
-      await OutletChain.find({ consumerId: consumerId })
+      await OutletChain(process.env.DB_NAME as string).find({ consumerId: consumerId })
         .then(async (res: any) => {
           console.log(res);
           if (!res || res.length === 0) {
@@ -43,7 +43,7 @@ class OutletChainController {
 
   public getOutletChain = async (outletChainID: any) => {
     let returnData = {};
-    await OutletChain.find({ outletChainID: outletChainID })
+    await OutletChain(process.env.DB_NAME as string).find({ outletChainID: outletChainID })
       .then(async (res: any) => {
         // console.log(res);
         if (res.length === 0) {
@@ -64,10 +64,10 @@ class OutletChainController {
 
   public addOutletChain = async (Body: any) => {
     let returnData = {};
-    const getSuperAdminDetails = await OutletChainAdmin.find({
+    const getSuperAdminDetails = await OutletChainAdmin(process.env.DB_NAME as string).find({
       adminID: Body.outletSuperAdminID,
     });
-    const getOutletChainDetails = await OutletChain.find({
+    const getOutletChainDetails = await OutletChain(process.env.DB_NAME as string).find({
       outletSuperAdminID: Body.outletSuperAdminID,
     });
     // console.log(getSuperAdminDetails[0].noOfChains, ': details admin : details chain :', getOutletChainDetails.length);
@@ -80,7 +80,7 @@ class OutletChainController {
     } else {
       console.log("continue");
       // let hashPassword = await bcrypt.hash(Body.password)
-      let outletChain = new OutletChain({
+      let outletChain = new (OutletChain(process.env.DB_NAME as string))({
         outletChainID: nanoid(),
         outletName: Body.outletName,
         consumerId: Body.consumerId,
@@ -117,7 +117,7 @@ class OutletChainController {
 
   public deleteOutletChain = async (outletChainID: any) => {
     let returnData = {};
-    await OutletChain.findOneAndDelete({ outletChainID: outletChainID })
+    await OutletChain(process.env.DB_NAME as string).findOneAndDelete({ outletChainID: outletChainID })
       .then(async (res: any) => {
         // console.log(res);
         if (!res) {
@@ -138,7 +138,7 @@ class OutletChainController {
 
   public updateOutletChain = async (outletChainID: any, Body: any) => {
     let returnData = {};
-    await OutletChain.findOneAndUpdate({ outletChainID: outletChainID }, Body, {
+    await OutletChain(process.env.DB_NAME as string).findOneAndUpdate({ outletChainID: outletChainID }, Body, {
       new: true,
     }).then(async (res: any) => {
       if (!res) {

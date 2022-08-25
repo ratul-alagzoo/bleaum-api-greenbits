@@ -18,7 +18,7 @@ class PointsController {
     //   let { status, ...others } = queries;
     //   queries = { ...others };
     // }
-    await Points.find()
+    await Points(process.env.DB_NAME as string).find()
       .then(async (res: any) => {
         if (!res) {
           returnData = {
@@ -38,7 +38,7 @@ class PointsController {
 
   public getSingleUserPoints = async (userID: any, outletID: any) => {
     let returnData = {};
-    await Points.findOne({ userID: userID })
+    await Points(process.env.DB_NAME as string).findOne({ userID: userID })
       .then(async (res: any) => {
         // console.log(res);
         if (res.length === 0) {
@@ -59,14 +59,14 @@ class PointsController {
 
   public createPoints = async (Body: any, outletID: any) => {
     let returnData = {};
-    await Points.findOneAndUpdate(
+    await Points(process.env.DB_NAME as string).findOneAndUpdate(
       { userID: "", outletChainID: outletID },
       { points: Body.points },
       { upsert: true }
     );
     // console.log(Body, outletID)
 
-    await User.find({ userID: Body.userID })
+    await User(process.env.DB_NAME as string).find({ userID: Body.userID })
       .then(async (res: any) => {
         // console.log(res)
         if (res.length === 0) {
@@ -75,7 +75,7 @@ class PointsController {
             data: "User not found",
           };
         } else {
-          let points = await new Points({
+          let points = await new (Points(process.env.DB_NAME as string))({
             pointsID: nanoid(8),
             userID: Body.userID,
             outletChainID: outletID,
@@ -114,7 +114,7 @@ class PointsController {
 
   public earnPoints = async (userID: any, outletID: any, body: any) => {
     let returnData = {};
-    await Points.findOneAndUpdate(
+    await Points(process.env.DB_NAME as string).findOneAndUpdate(
       { userID: userID, outletChainID: outletID },
       { points: body.points },
       { new: true }
@@ -150,7 +150,7 @@ class PointsController {
 
   public updatePoints = async (userID: any, body: any, outletID: any) => {
     let returnData = {};
-    await Points.findOneAndUpdate(
+    await Points(process.env.DB_NAME as string).findOneAndUpdate(
       { userID: userID, outletChainID: outletID },
       { points: body.points },
       { new: true }
@@ -175,7 +175,7 @@ class PointsController {
 
   public deletePoints = async (outletID: any, pointsId: any) => {
     let returnData = {};
-    await Points.findOneAndDelete({
+    await Points(process.env.DB_NAME as string).findOneAndDelete({
       pointsID: pointsId,
       outletChainID: outletID,
     })

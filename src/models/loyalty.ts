@@ -40,6 +40,7 @@ const loyaltySchema = new Schema(
   { timestamps: true }
 );
 
-const loyalty = mongoose.model("Loyalty", loyaltySchema);
+const loyalty = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model("Loyalty", loyaltySchema);
 
 export default loyalty;

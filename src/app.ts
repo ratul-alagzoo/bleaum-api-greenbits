@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import { createServer, Server as HttpServer } from "http";
 import socket from "./socket";
+import { mapClientsMiddleware } from "./middlewares/mapClients.middleware";
 dotenv.config();
 
 class App {
@@ -38,6 +39,7 @@ class App {
       })
     );
     this.app.use(bodyParser.json());
+    this.app.use(mapClientsMiddleware);
   }
 
   private initializeControllers(controllers: any) {

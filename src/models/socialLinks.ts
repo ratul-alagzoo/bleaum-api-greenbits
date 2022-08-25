@@ -48,7 +48,8 @@ const SocialLinksSchema = new Schema(
   { timestamps: true }
 );
 
-const SocialLinksDocument = mongoose.model<ISocialLinksDocument>(
+const SocialLinksDocument = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model<ISocialLinksDocument>(
   "SocialLinks",
   SocialLinksSchema
 );

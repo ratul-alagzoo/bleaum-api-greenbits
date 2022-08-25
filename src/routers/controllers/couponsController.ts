@@ -11,7 +11,7 @@ class CouponController {
 
   public getAllCoupons = async (consumerId: any) => {
     let returnData = {};
-    await Coupons.find({ consumerId: consumerId })
+    await Coupons(process.env.DB_NAME as string).find({ consumerId: consumerId })
       .then(async (res: any) => {
         // console.log(res);
         if (!res) {
@@ -32,7 +32,7 @@ class CouponController {
 
   public searchCoupons = async (consumerId: any, name: any) => {
     let returnData = {};
-    await Coupons.find({
+    await Coupons(process.env.DB_NAME as string).find({
       consumerId: consumerId,
       couponCode: { $regex: name, $options: "i" },
     })
@@ -56,7 +56,7 @@ class CouponController {
 
   public getSingleCoupon = async (couponCode: any) => {
     let returnData = {};
-    await Coupons.find({ couponCode: couponCode })
+    await Coupons(process.env.DB_NAME as string).find({ couponCode: couponCode })
       .then(async (res: any) => {
         // console.log(res);
         if (res.length === 0) {
@@ -77,7 +77,7 @@ class CouponController {
 
   public getOutletCoupon = async (consumerId: any, outletChainId: any) => {
     let returnData = {};
-    await Coupons.find({
+    await Coupons(process.env.DB_NAME as string).find({
       consumerId: consumerId,
       "selectedOutlets.outletChainID": outletChainId,
     })
@@ -103,7 +103,7 @@ class CouponController {
     let returnData = {};
     try {
       console.log("Body is: ", Body);
-      await Coupons.findOneAndUpdate({ couponId: couponId }, Body, {
+      await Coupons(process.env.DB_NAME as string).findOneAndUpdate({ couponId: couponId }, Body, {
         new: true,
       }).then(async (res: any) => {
         console.log(res);
@@ -148,7 +148,7 @@ class CouponController {
 
   public deleteCoupon = async (couponId: any) => {
     let returnData = {};
-    await Coupons.findOneAndDelete({ couponId: couponId }).then(
+    await Coupons(process.env.DB_NAME as string).findOneAndDelete({ couponId: couponId }).then(
       async (res: any) => {
         if (!res || res.length === 0) {
           returnData = {
@@ -168,7 +168,7 @@ class CouponController {
 
   public createCoupon = async (Body: any) => {
     let returnData = {};
-    let deal = await new Coupons({
+    let deal = await new (Coupons(process.env.DB_NAME as string))({
       couponId: nanoid(8),
       consumerId: Body.consumerId,
       couponCode: Body.couponCode,

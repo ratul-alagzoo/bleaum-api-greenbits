@@ -27,10 +27,10 @@ class BrandsControllerV2 {
     }
 
     try {
-      const total = await Brand.count({ ...filters });
+      const total = await Brand(process.env.DB_NAME as string).count({ ...filters });
       totalPages = Math.ceil(total / perPage);
       //   console.log("Total pages: ", total);
-      const brands = await Brand.find({ ...filters })
+      const brands = await Brand(process.env.DB_NAME as string).find({ ...filters })
         //@ts-ignore
         .sort({ ...sortFilters })
         .limit(perPage)

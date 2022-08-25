@@ -117,6 +117,7 @@ const DealsSchema = new Schema(
   { timestamps: true }
 );
 
-const Deal = mongoose.model<IDealDocument>("Deal", DealsSchema);
+const Deal = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model<IDealDocument>("Deal", DealsSchema);
 
 export default Deal;

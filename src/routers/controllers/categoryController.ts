@@ -6,7 +6,9 @@ class CategoryController {
 
   public getAllCategories = async () => {
     let returnData = {};
-    await Category.find()
+    console.log("DB is: ", process.env.DB_NAME);
+    await Category(process.env.DB_NAME as string)
+      .find()
       .then(async (res: any) => {
         // console.log(res);
         if (!res) {
@@ -27,39 +29,42 @@ class CategoryController {
 
   public updateCategory = async (categoryID: any, Body: any) => {
     let returnData = {};
-    await Category.findOneAndUpdate({ categoryID: categoryID }, Body, {
-      new: true,
-    }).then(async (res: any) => {
-      if (!res) {
-        returnData = {
-          Message: "Failure",
-          data: "No Category found",
-        };
-      } else {
-        returnData = {
-          Message: "Success",
-          data: res,
-        };
-      }
-    });
+    await Category(process.env.DB_NAME as string)
+      .findOneAndUpdate({ categoryID: categoryID }, Body, {
+        new: true,
+      })
+      .then(async (res: any) => {
+        if (!res) {
+          returnData = {
+            Message: "Failure",
+            data: "No Category found",
+          };
+        } else {
+          returnData = {
+            Message: "Success",
+            data: res,
+          };
+        }
+      });
     return await returnData;
   };
   public getAllCategoriesOutlet = async (outletId: any) => {
     let returnData: any = {};
     let categories: any = [];
     console.log(outletId);
-    await Category.find(
-      {},
-      {
-        countInventory: { $elemMatch: { outletChainID: outletId } },
-        categoryID: 1,
-        name: 1,
-        slug: 1,
-        parentCategory: 1,
-        image: 1,
-        status: 1,
-      }
-    )
+    await Category(process.env.DB_NAME as string)
+      .find(
+        {},
+        {
+          countInventory: { $elemMatch: { outletChainID: outletId } },
+          categoryID: 1,
+          name: 1,
+          slug: 1,
+          parentCategory: 1,
+          image: 1,
+          status: 1,
+        }
+      )
       .then(async (res: any) => {
         // console.log(res);
         await res.map((obj: any) => {
@@ -87,7 +92,8 @@ class CategoryController {
 
   public searchByCategory = async (Name: any) => {
     let returnData = {};
-    await Category.find({ name: { $regex: Name, $options: "i" } })
+    await Category(process.env.DB_NAME as string)
+      .find({ name: { $regex: Name, $options: "i" } })
       .limit(5)
       .then(async (res: any) => {
         console.log(res);
@@ -112,7 +118,8 @@ class CategoryController {
     const resultsPerPage = 30;
     let page = Page >= 1 ? Page : 1;
     page = page - 1;
-    await Category.find()
+    await Category(process.env.DB_NAME as string)
+      .find()
       .limit(resultsPerPage)
       .skip(resultsPerPage * page)
       .then(async (res: any) => {
@@ -134,7 +141,8 @@ class CategoryController {
 
   public getSingleCategory = async (categoryID: any) => {
     let returnData = {};
-    await Category.find({ categoryID: categoryID })
+    await Category(process.env.DB_NAME as string)
+      .find({ categoryID: categoryID })
       .then(async (res: any) => {
         // console.log(res);
         if (res.length === 0) {
@@ -163,11 +171,11 @@ class CategoryController {
     console.log(filtered, "filtered categories", filtered.length);
     for (let i = 0; i < filtered.length; i++) {
       // console.log(filtered[i], `filtered${i}`);
-      let response = await Category.findOneAndUpdate(
-        { categoryID: filtered[i].categoryID },
-        filtered[i],
-        { new: true }
-      );
+      let response = await Category(
+        process.env.DB_NAME as string
+      ).findOneAndUpdate({ categoryID: filtered[i].categoryID }, filtered[i], {
+        new: true,
+      });
       // console.log(response, 'response')
       //@ts-ignore
       if (!response || response?.length === 0) {
@@ -176,7 +184,8 @@ class CategoryController {
     }
 
     // console.log(sampleArray, 'sample Array categories');
-    await Category.insertMany(sampleArray)
+    await Category(process.env.DB_NAME as string)
+      .insertMany(sampleArray)
       .then(async (response) => {
         // console.log(response, 'response');
         if (!response || response.length === 0) {

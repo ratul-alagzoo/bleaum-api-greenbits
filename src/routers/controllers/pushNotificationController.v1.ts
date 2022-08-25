@@ -64,7 +64,7 @@ class PushNotificationControllerV1 {
   ): Promise<IControllerResponse<any>> => {
     try {
       const { clientId, ip, userId } = params;
-      const data = await PNDocument.findOneAndUpdate(
+      const data = await PNDocument(process.env.DB_NAME as string).findOneAndUpdate(
         { clientId, userId, ip },
         {
           $set: {
@@ -103,7 +103,7 @@ class PushNotificationControllerV1 {
   }): Promise<IControllerResponse<any>> => {
     try {
       const { clientId, ip, userId } = params;
-      await PNDocument.deleteMany({ clientId, userId, ip });
+      await PNDocument(process.env.DB_NAME as string).deleteMany({ clientId, userId, ip });
       return {
         statusCode: 200,
         toSend: {
@@ -157,7 +157,7 @@ class PushNotificationControllerV1 {
     outletChainId: string
   ) => {
     try {
-      const userTokens = await PNDocument.find({ outletChainId }).lean();
+      const userTokens = await PNDocument(process.env.DB_NAME as string).find({ outletChainId }).lean();
       let tokens = userTokens.map((obj) => obj.token);
       await firebaseAdmin
         .messaging()
@@ -185,7 +185,7 @@ class PushNotificationControllerV1 {
     outletChainId: string
   ) => {
     try {
-      const userToken = await PNDocument.findOne({
+      const userToken = await PNDocument(process.env.DB_NAME as string).findOne({
         outletChainId,
         userId,
       }).lean();

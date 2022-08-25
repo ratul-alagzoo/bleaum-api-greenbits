@@ -32,6 +32,7 @@ const BrandSchema = new Schema({
     { timestamps: true }
 )
 
-const Brand = mongoose.model('Brand', BrandSchema)
+const Brand = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Brand', BrandSchema)
 
 export default Brand;

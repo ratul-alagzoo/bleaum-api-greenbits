@@ -116,7 +116,7 @@ class DealsControllerV1 {
 
       //an expired deal can not be edited
       if (body.dealId) {
-        const prevDeal = await Deals.findOne({ dealId: body.dealId }).lean();
+        const prevDeal = await Deals(process.env.DB_NAME as string).findOne({ dealId: body.dealId }).lean();
         if (!prevDeal) {
           return {
             statusCode: 404,
@@ -149,7 +149,7 @@ class DealsControllerV1 {
         let categoryIds = body.selectedCategories.map((obj) => obj.categoryID);
         let categoryNames = body.selectedCategories.map((obj) => obj.name);
 
-        let foundProducts = await Inventory.find({
+        let foundProducts = await Inventory(process.env.DB_NAME as string).find({
           outletChainID,
           "product.category": {
             $elemMatch: {
@@ -208,7 +208,7 @@ class DealsControllerV1 {
         let productIds: string[] = body.selectedProducts.map(
           (obj) => obj.productID
         );
-        let foundProducts = await Inventory.find({
+        let foundProducts = await Inventory(process.env.DB_NAME as string).find({
           outletChainID,
           productID: {
             $in: productIds,
@@ -295,7 +295,7 @@ class DealsControllerV1 {
         }
       }
 
-      const deal = await Deals.findOneAndUpdate(
+      const deal = await Deals(process.env.DB_NAME as string).findOneAndUpdate(
         {
           consumerId: toInsert.consumerId,
           dealId: toInsert.dealId,
@@ -378,7 +378,7 @@ class DealsControllerV1 {
           },
         };
       }
-      const categories = await Category.find({ ...filters }).lean();
+      const categories = await Category(process.env.DB_NAME as string).find({ ...filters }).lean();
       // console.log("Unfiltered categories are: ", categories.length);
       const availableCategories = categories.filter(
         (el) => !categoriesAffected[el.categoryID as string]
@@ -419,7 +419,7 @@ class DealsControllerV1 {
       if (params.outletChainID) {
         filters = { ...filters, outletChainID: params.outletChainID };
       }
-      const products = await Inventory.find({ ...filters }).lean();
+      const products = await Inventory(process.env.DB_NAME as string).find({ ...filters }).lean();
       const availableProducts = products.filter(
         (el) => !productsAffected[el.productID as string]
       );
@@ -518,7 +518,7 @@ class DealsControllerV1 {
         ...filters,
         $and: [...andConditions],
       };
-      const data = await Deals.find({
+      const data = await Deals(process.env.DB_NAME as string).find({
         ...filters,
       }).lean();
       return {
@@ -597,7 +597,7 @@ class DealsControllerV1 {
         },
       };
     }
-    return await Deals.find({
+    return await Deals(process.env.DB_NAME as string).find({
       ...filters,
     }).lean();
   };

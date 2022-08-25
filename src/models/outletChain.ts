@@ -86,5 +86,6 @@ const OutletChainSchema = new Schema({
     { timestamps: true }
 )
 
-const OutletChain = mongoose.model('OutletChain', OutletChainSchema)
+const OutletChain = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('OutletChain', OutletChainSchema)
 export default OutletChain;

@@ -18,6 +18,7 @@ const WishlistSchema = new Schema({
 { timestamps: true }
 )
 
-const WishList = mongoose.model('WishList', WishlistSchema);
+const WishList = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('WishList', WishlistSchema);
 
 export default WishList;

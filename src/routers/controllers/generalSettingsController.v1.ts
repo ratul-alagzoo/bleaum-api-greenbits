@@ -45,7 +45,7 @@ class GeneralSettingsController {
         footerLogoFileSource,
         mainLogoFileSource,
       } = param;
-      let data = await MediaDocument.findOneAndUpdate(
+      let data = await MediaDocument(process.env.DB_NAME as string).findOneAndUpdate(
         { outletChainID: outletChainID },
         {
           $set: {
@@ -83,7 +83,7 @@ class GeneralSettingsController {
     outletChainID: string
   ): Promise<IControllerResponse<any>> => {
     try {
-      let data = await MediaDocument.findOne({
+      let data = await MediaDocument(process.env.DB_NAME as string).findOne({
         outletChainID,
       });
 
@@ -111,7 +111,7 @@ class GeneralSettingsController {
 
   //insert initial data ---> seeding purpose
   private insertInitialData = async (outletChainID: string) => {
-    let data = await MediaDocument.create({
+    let data = await MediaDocument(process.env.DB_NAME as string).create({
       outletChainID,
       faviconLogoFileSource: "",
       mainLogoFileSource: "",
@@ -127,7 +127,7 @@ class GeneralSettingsController {
   ): Promise<IControllerResponse<any>> => {
     try {
       let { outletChainID, links } = param;
-      let data = await SocialLinksDocument.findOneAndUpdate(
+      let data = await SocialLinksDocument(process.env.DB_NAME as string).findOneAndUpdate(
         { outletChainID: outletChainID },
         {
           $set: {
@@ -163,7 +163,7 @@ class GeneralSettingsController {
     outletChainID: string
   ): Promise<IControllerResponse<any>> => {
     try {
-      let data = await SocialLinksDocument.findOne({
+      let data = await SocialLinksDocument(process.env.DB_NAME as string).findOne({
         outletChainID,
       });
       //avoid 404
@@ -192,7 +192,7 @@ class GeneralSettingsController {
   //basic info related
   public getBasicInfo = async (outletChainID: string) => {
     try {
-      let data = await OutletChainAdmin.findOne({
+      let data = await OutletChainAdmin(process.env.DB_NAME as string).findOne({
         outletChainID,
       }).lean();
       if (!data) {
@@ -231,7 +231,7 @@ class GeneralSettingsController {
     try {
       let { outletChainID, latitude, longitude, ...others } = param;
       // console.log("Others is: ", others);
-      let data = await OutletChainAdmin.findOneAndUpdate(
+      let data = await OutletChainAdmin(process.env.DB_NAME as string).findOneAndUpdate(
         { outletChainID: outletChainID },
         {
           $set: {
@@ -314,10 +314,10 @@ class GeneralSettingsController {
         processedKeys.push(key);
       }
 
-      let previousData = await NotificationSettingsDocument.findOne({
+      let previousData = await NotificationSettingsDocument(process.env.DB_NAME as string).findOne({
         outletChainID,
       }).lean();
-      let data = null;
+      let data:any;
       if (previousData) {
         const toSet = {
           ...initialNotificationSettingsData,
@@ -325,7 +325,7 @@ class GeneralSettingsController {
           ...preferences,
         };
         console.log("To Set", toSet);
-        data = await NotificationSettingsDocument.findOneAndUpdate(
+        data = await NotificationSettingsDocument(process.env.DB_NAME as string).findOneAndUpdate(
           { outletChainID },
           {
             $set: {
@@ -336,7 +336,7 @@ class GeneralSettingsController {
           { new: true, upsert: true }
         );
       } else {
-        data = await NotificationSettingsDocument.create({
+        data = await NotificationSettingsDocument(process.env.DB_NAME as string).create({
           outletChainID,
           preferences: {
             ...initialNotificationSettingsData,
@@ -367,7 +367,7 @@ class GeneralSettingsController {
     outletChainID: string
   ): Promise<IControllerResponse<any>> => {
     try {
-      let data = await NotificationSettingsDocument.findOne({
+      let data = await NotificationSettingsDocument(process.env.DB_NAME as string).findOne({
         outletChainID,
       });
 
@@ -398,7 +398,7 @@ class GeneralSettingsController {
   private insertInitialNotificationSettingsData = async (
     outletChainID: string
   ) => {
-    let data = await NotificationSettingsDocument.create({
+    let data = await NotificationSettingsDocument(process.env.DB_NAME as string).create({
       outletChainID,
       preferences: initialNotificationSettingsData,
     });

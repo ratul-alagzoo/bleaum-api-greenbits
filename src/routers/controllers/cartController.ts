@@ -7,7 +7,7 @@ class CartController {
     public storecart = async(Body: any) => {
         let returnData = {};
 
-        let cart = await new Cart({
+        let cart = await new (Cart(process.env.DB_NAME as string))({
             cartId: nanoid(8),
             consumerId: Body.consumerId,
             outletId: Body.outletId,
@@ -37,7 +37,7 @@ class CartController {
 
     public deleteCart = async(customerId:any, productID: any) => {
         let returnData = {};
-        await Cart.update({customerId: customerId}, { $pull: {products: {productID:productID}} }).then(async (res: any) => {
+        await Cart(process.env.DB_NAME as string).update({customerId: customerId}, { $pull: {products: {productID:productID}} }).then(async (res: any) => {
             console.log(res);
             if(!res){
                 returnData = {
@@ -57,7 +57,7 @@ class CartController {
 
     public deleteWholeCart = async(cartId:any) => {
         let returnData = {};
-        await Cart.findOneAndDelete({cartId: cartId}).then(async (res: any) => {
+        await Cart(process.env.DB_NAME as string).findOneAndDelete({cartId: cartId}).then(async (res: any) => {
             console.log(res);
             if(!res){
                 returnData = {
@@ -77,7 +77,7 @@ class CartController {
 
     public addProductToCart = async(customerId: any, Body: any) => {
         let returnData = {};
-        await Cart.update({ customerId: customerId }, {"$push": { "products": Body }}, {products: 1}).then(async (res: any) => {
+        await Cart(process.env.DB_NAME as string).update({ customerId: customerId }, {"$push": { "products": Body }}, {products: 1}).then(async (res: any) => {
             if (!res) {
                 returnData = {
                     'Message': 'Failure',
@@ -96,7 +96,7 @@ class CartController {
 
     public getCart = async(customerId: any) => {
         let returnData = {};
-        await Cart.find({customerId: customerId, deActivate: false}).then(async (res:any) => {
+        await Cart(process.env.DB_NAME as string).find({customerId: customerId, deActivate: false}).then(async (res:any) => {
             if(!res){
                 returnData = {
                     'Message': 'Failure',
@@ -116,7 +116,7 @@ class CartController {
     public updatePatchCart = async(customerId: any, productID: any,Body: any) => {
         let returnData = {}
         console.log(Body, productID, customerId);
-        await Cart.update({ customerId: customerId, "products.productID": productID }, 
+        await Cart(process.env.DB_NAME as string).update({ customerId: customerId, "products.productID": productID },
         { $set: {"products.$.quantity": Body.quantity, "products.$.image": Body.image, "products.$.name": Body.name}}
         ,{multi: true}).then(async (res: any) => {
             console.log(res);

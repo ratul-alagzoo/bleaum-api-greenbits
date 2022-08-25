@@ -41,6 +41,7 @@ const MembershipSchema = new Schema({
     { timestamps: true }
 )
 
-const Membership = mongoose.model('Membership', MembershipSchema)
+const Membership = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Membership', MembershipSchema)
 
 export default Membership;

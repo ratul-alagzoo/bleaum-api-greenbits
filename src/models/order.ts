@@ -42,5 +42,6 @@ const OrderSchema = new Schema({
 { timestamps: true }
 )
 
-const Order = mongoose.model('Order', OrderSchema);
+const Order = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Order', OrderSchema);
 export default Order;

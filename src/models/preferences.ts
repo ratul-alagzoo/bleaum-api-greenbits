@@ -33,5 +33,6 @@ const PreferencesSchema = new Schema({
 { timestamps: true }
 )
 
-const Model = mongoose.model('preferences', PreferencesSchema);
+const Model = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('preferences', PreferencesSchema);
 export default Model;

@@ -51,12 +51,12 @@ class DashboardController {
         let topSellingProductByRevenue: any = [];
         let topSellingProductByCount: any = [];
         let tempProducts: any = [];
-        await User.find({}).then((res: any) => {
+        await User(process.env.DB_NAME as string).find({}).then((res: any) => {
             if(res.length){
                 totalRegistrations= res.length;
             }
         })
-        await User.find({accountCreatedOn: {$gte: monthly}}).then((res: any) => {
+        await User(process.env.DB_NAME as string).find({accountCreatedOn: {$gte: monthly}}).then((res: any) => {
             // console.log(new Date(date.getTime() - 1000 * 86400 * 7), res.length, 'weekly')
             if(res.length){
                 res.map((data: any) => {
@@ -72,7 +72,7 @@ class DashboardController {
         //         })
         //     }
         // })
-        await Order.find({outletID: process.env.MENU_KEY}).then((res: any) => {
+        await Order(process.env.DB_NAME as string).find({outletID: process.env.MENU_KEY}).then((res: any) => {
             if(res.length){
                 totalOrders= res.length
                 res.map((price: any) => {
@@ -84,7 +84,7 @@ class DashboardController {
                 })
             }
         })
-        await Order.find({createdAt: {$gte: new Date(date.getTime() - 1000 * 86400 * 7)}}).then((res: any) => {
+        await Order(process.env.DB_NAME as string).find({createdAt: {$gte: new Date(date.getTime() - 1000 * 86400 * 7)}}).then((res: any) => {
             if(res.length){
                 // console.log(res, 'order responses')
                 res.map((price: any) => {
@@ -94,7 +94,7 @@ class DashboardController {
                 })
             }
         })
-        await Order.find({createdAt: {$gte:monthly}}).then((res: any) => {
+        await Order(process.env.DB_NAME as string).find({createdAt: {$gte:monthly}}).then((res: any) => {
             if(res.length){
                 // console.log(res, 'order responses')
                 res.map((price: any) => {
@@ -104,7 +104,7 @@ class DashboardController {
                 })
             }
         })
-        await Inventory.find({}).then(async (res:any) => {
+        await Inventory(process.env.DB_NAME as string).find({}).then(async (res:any) => {
             if(res.length){
                 totalProducts= res.length
             }
@@ -116,7 +116,7 @@ class DashboardController {
         topSellingProductByCount.sort((a: any, b: any) => parseFloat(b.occurrence) - parseFloat(a.occurrence));
         
         // console.log(today, 'total', totalRegistrations, totalOrders, totalProducts, totalRevenue, topSellingProductByRevenue, topSellingProductByCount)
-        let dashboard = await new Dashboard({
+        let dashboard = await new (Dashboard(process.env.DB_NAME as string))({
             outletId: process.env.MENU_KEY,
             totalRegistrations: totalRegistrations,
             totalOrders: totalOrders,
@@ -139,12 +139,12 @@ class DashboardController {
         let returnData = {};
         const today = new Date();
         today.setMonth(today.getMonth() -1);
-        const dashboard = await Dashboard.findOne({createdAt: {$gte:today}});
+        const dashboard = await Dashboard(process.env.DB_NAME as string).findOne({createdAt: {$gte:today}});
         console.log('dashboard', dashboard)
         if(!dashboard){
             await this.createDashboard();
             await console.log('execute')
-            await Dashboard.find({createdAt: {$gte:today}}).then((res: any) => {
+            await Dashboard(process.env.DB_NAME as string).find({createdAt: {$gte:today}}).then((res: any) => {
                 
                 returnData = {
                     'Message': 'Success',

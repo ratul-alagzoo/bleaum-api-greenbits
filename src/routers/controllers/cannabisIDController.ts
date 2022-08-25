@@ -6,7 +6,7 @@ class CannabisIdController {
 
   public getSingleCannabis = async (cannabisId: any) => {
     let returnData = {};
-    await Cannabis.find({ cannabisId: cannabisId })
+    await Cannabis(process.env.DB_NAME as string).find({ cannabisId: cannabisId })
       .then(async (res: any) => {
         // console.log(res);
         if (res.length === 0) {
@@ -27,7 +27,7 @@ class CannabisIdController {
 
   public getAllOutletCannabis = async (outletId: any) => {
     var returnData = {};
-    await Cannabis.aggregate([
+    await Cannabis(process.env.DB_NAME as string).aggregate([
       {
         $lookup: {
           from: "users",
@@ -63,7 +63,7 @@ class CannabisIdController {
     const resultsPerPage = 30;
     let page = Page >= 1 ? Page : 1;
     page = page - 1;
-    await Cannabis.find()
+    await Cannabis(process.env.DB_NAME as string).find()
       .limit(resultsPerPage)
       .skip(resultsPerPage * page)
       .then(async (res: any) => {
@@ -85,7 +85,7 @@ class CannabisIdController {
 
   public createCannabis = async (Body: any) => {
     let returnData = {};
-    let cannabisId = await new Cannabis({
+    let cannabisId = await new (Cannabis(process.env.DB_NAME as string))({
       cannabisId: nanoid(8),
       email: Body.email,
       medicalRecommendation: Body.medicalRecommendation,
@@ -123,7 +123,7 @@ class CannabisIdController {
 
   public updateCannabis = async (cannabisId: any, body: any) => {
     let returnData = {};
-    await Cannabis.findOneAndUpdate({ cannabisId: cannabisId }, body, {
+    await Cannabis(process.env.DB_NAME as string).findOneAndUpdate({ cannabisId: cannabisId }, body, {
       new: true,
     })
       .then(async (res: any) => {
@@ -146,7 +146,7 @@ class CannabisIdController {
 
   public deleteCannabis = async (cannabisId: any) => {
     let returnData = {};
-    await Cannabis.findOneAndDelete({ cannabisId: cannabisId })
+    await Cannabis(process.env.DB_NAME as string).findOneAndDelete({ cannabisId: cannabisId })
       .then(async (res: any) => {
         console.log(res);
         if (!res || res.length === 0) {

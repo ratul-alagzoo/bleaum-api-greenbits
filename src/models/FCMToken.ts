@@ -13,5 +13,6 @@ const FCMSchema = new Schema({
   },
 });
 
-const FCMTokenModal = mongoose.model("FCMTokens", FCMSchema);
+const FCMTokenModal = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model("FCMTokens", FCMSchema);
 export default FCMTokenModal;

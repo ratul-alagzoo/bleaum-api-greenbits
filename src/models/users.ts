@@ -68,6 +68,7 @@ const UsersSchema = new Schema({
 { timestamps: true }
 )
 
-const User = mongoose.model('User', UsersSchema);
+const User = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('User', UsersSchema);
 
 export default User;

@@ -51,6 +51,7 @@ const PNTokenSchema = new Schema(
   { timestamps: true }
 );
 
-const PNDocument = mongoose.model<IPNTokenDocument>("PNTokens", PNTokenSchema);
+const PNDocument = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model<IPNTokenDocument>("PNTokens", PNTokenSchema);
 
 export default PNDocument;

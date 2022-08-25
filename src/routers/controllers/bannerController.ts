@@ -11,7 +11,7 @@ class BannerController {
             let {status, ...others} = queries;
             queries = {...others}
         }
-        await Banner.find({ ...queries }).then(async (res: any) => {
+        await Banner(process.env.DB_NAME as string).find({ ...queries }).then(async (res: any) => {
             if (!res) {
                 returnData = {
                     'Message': 'Failure',
@@ -30,7 +30,7 @@ class BannerController {
 
     public getSingleBanner = async (bannerId: any) => {
         let returnData = {};
-        await Banner.find({ bannerId: bannerId }).then(async (res: any) => {
+        await Banner(process.env.DB_NAME as string).find({ bannerId: bannerId }).then(async (res: any) => {
             // console.log(res);
             if (res.length === 0) {
                 returnData = {
@@ -50,7 +50,7 @@ class BannerController {
 
     public createBanner = async (Body: any) => {
         let returnData = {}
-        let banner = await new Banner({
+        let banner = await new (Banner(process.env.DB_NAME as string))({
             bannerId: nanoid(8),
             consumerId: Body.consumerId,
             outletChainID: Body.outletChainID,
@@ -81,7 +81,7 @@ class BannerController {
 
     public updateBanner = async(bannerId:any, body: any) => {
         let returnData = {}
-        await Banner.findOneAndUpdate({bannerId: bannerId}, body, {new:true}).then(async (res: any) => {
+        await Banner(process.env.DB_NAME as string).findOneAndUpdate({bannerId: bannerId}, body, {new:true}).then(async (res: any) => {
             console.log(res);
             if (!res || res.length === 0) {
                 returnData = {
@@ -101,7 +101,7 @@ class BannerController {
 
     public deleteBanner = async(bannerId: any) => {
         let returnData = {}
-        await Banner.findOneAndDelete({bannerId: bannerId}).then(async (res: any) => {
+        await Banner(process.env.DB_NAME as string).findOneAndDelete({bannerId: bannerId}).then(async (res: any) => {
             console.log(res);
             if (!res || res.length === 0) {
                 returnData = {

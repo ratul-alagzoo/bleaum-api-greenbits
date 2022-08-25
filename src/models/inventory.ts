@@ -44,5 +44,6 @@ const InventorySchema = new Schema({
 { timestamps: true }
 )
 
-const Inventory = mongoose.model('inventory', InventorySchema);
+const Inventory = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('inventory', InventorySchema);
 export default Inventory;

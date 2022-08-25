@@ -27,6 +27,7 @@ const MediaSchema = new Schema(
   { timestamps: true }
 );
 
-const MediaDocument = mongoose.model<IMediaDocument>("Media", MediaSchema);
+const MediaDocument = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model<IMediaDocument>("Media", MediaSchema);
 
 export default MediaDocument;

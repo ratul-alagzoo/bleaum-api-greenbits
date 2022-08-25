@@ -17,7 +17,7 @@ class OrderController {
 
   public getOrderDetails = async (orderID: any) => {
     let returnData = {};
-    await Order.find({ orderID: orderID, cancelled: false })
+    await Order(process.env.DB_NAME as string).find({ orderID: orderID, cancelled: false })
       .then(async (res: any) => {
         console.log(res);
         if (!res || res.length === 0) {
@@ -38,7 +38,7 @@ class OrderController {
 
   public cancelOrder = async (orderID: any) => {
     let returnData = {};
-    await Order.findOneAndUpdate(
+    await Order(process.env.DB_NAME as string).findOneAndUpdate(
       { orderID: orderID },
       { cancelled: true },
       { new: true }
@@ -63,7 +63,7 @@ class OrderController {
 
   public getAllDay = async (consumerId: any) => {
     let returnData = {};
-    await Order.find({ consumerId: consumerId })
+    await Order(process.env.DB_NAME as string).find({ consumerId: consumerId })
       .then(async (res: any) => {
         console.log(res);
         if (!res || res.length === 0) {
@@ -84,7 +84,7 @@ class OrderController {
 
   public updateOrder = async (orderID: any, body: any) => {
     let returnData = {};
-    await Order.findOneAndUpdate({ orderID: orderID }, body, {
+    await Order(process.env.DB_NAME as string).findOneAndUpdate({ orderID: orderID }, body, {
       new: true,
     }).then(async (res: any) => {
       console.log(res);
@@ -130,7 +130,7 @@ class OrderController {
 
   public searchOrder = async (outletID: any, name: any) => {
     let returnData = {};
-    await Order.find({
+    await Order(process.env.DB_NAME as string).find({
       outletID: outletID,
       orderID: { $regex: name, $options: "i" },
     })
@@ -154,10 +154,10 @@ class OrderController {
 
   public getOrderByOutlet = async (outletID: any) => {
     let returnData = {};
-    await Order.find({ outletID: outletID })
+    await Order(process.env.DB_NAME as string).find({ outletID: outletID })
       .then(async (res: any) => {
         console.log(res.length, "res");
-        let customer = await User.find({ customerID: res.customerID });
+        let customer = await User(process.env.DB_NAME as string).find({ customerID: res.customerID });
         if (!res || res.length === 0) {
           returnData = {
             Message: "Failure",
@@ -190,14 +190,14 @@ class OrderController {
       let orderId = code();
       let found = false;
       while (!found) {
-        const previousData = await Order.findOne({ orderID: orderId }).lean();
+        const previousData = await Order(process.env.DB_NAME as string).findOne({ orderID: orderId }).lean();
         if (previousData) {
           orderId = code();
         } else {
           found = true;
         }
       }
-      let order = await new Order({
+      let order = await new (Order(process.env.DB_NAME as string))({
         orderID: orderId,
         outletID: body.outletID,
         customer: body.customer,
@@ -243,7 +243,7 @@ class OrderController {
         })
         .catch((err: any) => console.log(err));
       body.products.map(async (product: any) => {
-        await Inventory.find({ productID: product.productID })
+        await Inventory(process.env.DB_NAME as string).find({ productID: product.productID })
           .then(async (res) => {
             console.log(res[0], "upcoming");
 
@@ -252,7 +252,7 @@ class OrderController {
               Details: res[0],
               Date: Date.now(),
             };
-            await PopularNTrending.findOneAndUpdate(
+            await PopularNTrending(process.env.DB_NAME as string).findOneAndUpdate(
               { "Details.productID": product.productID },
               { $set: objectBody },
               { upsert: true, new: true }
@@ -281,7 +281,7 @@ class OrderController {
     // }
     console.log("working");
 
-    await Order.find({ "customer.customerID": customerID, cancelled: false })
+    await Order(process.env.DB_NAME as string).find({ "customer.customerID": customerID, cancelled: false })
       .then(async (res: any) => {
         if (!res || res.length === 0) {
           returnData = {

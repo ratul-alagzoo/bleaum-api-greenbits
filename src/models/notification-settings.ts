@@ -246,8 +246,8 @@ const NotificationSettingsSchema = new Schema(
   { timestamps: true }
 );
 
-const NotificationSettingsDocument =
-  mongoose.model<INotificationSettingsDocument>(
+const NotificationSettingsDocument = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model<INotificationSettingsDocument>(
     "NotificationSettings",
     NotificationSettingsSchema
   );

@@ -73,6 +73,7 @@ const verificationSchema = new Schema({
     { timestamps: true }
 )
 
-const Verification = mongoose.model('Verification', verificationSchema)
+const Verification = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Verification', verificationSchema)
 
 export default Verification;

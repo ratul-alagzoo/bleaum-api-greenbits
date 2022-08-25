@@ -73,6 +73,7 @@ const ProductsSchema = new Schema({
 { timestamps: true }
 )
 
-const Product = mongoose.model('Product', ProductsSchema);
+const Product = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Product', ProductsSchema);
 
 export default Product;

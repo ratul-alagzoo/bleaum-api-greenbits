@@ -18,5 +18,6 @@ const OtpSchema = new Schema({
     }
 })
 
-const OTP = mongoose.model('Order', OtpSchema);
+const OTP = (dbName: string) =>
+    mongoose.connection.useDb(dbName).model('Order', OtpSchema);
 export default OTP;

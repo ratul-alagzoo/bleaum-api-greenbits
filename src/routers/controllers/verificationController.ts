@@ -6,7 +6,7 @@ class VerificationController {
 
     public getAllVerification = async () => {
         let returnData = {};
-        await Verification.find({}).then(async (res: any) => {
+        await Verification(process.env.DB_NAME as string).find({}).then(async (res: any) => {
             if (!res) {
                 returnData = {
                     'Message': 'Failure',
@@ -25,7 +25,7 @@ class VerificationController {
 
     public getOutletVerification = async (outletChainID: any) => {
         let returnData = {};
-        await Verification.find({ outletChainID: outletChainID }).then(async (res: any) => {
+        await Verification(process.env.DB_NAME as string).find({ outletChainID: outletChainID }).then(async (res: any) => {
             // console.log(res);
             if (res.length === 0) {
                 returnData = {
@@ -45,7 +45,7 @@ class VerificationController {
 
     public getSingleVerification = async (cannabisID: any) => {
         let returnData = {};
-        await Verification.findOne({ verificationId: cannabisID }).then(async (res: any) => {
+        await Verification(process.env.DB_NAME as string).findOne({ verificationId: cannabisID }).then(async (res: any) => {
             // console.log(res);
             if (res.length === 0) {
                 returnData = {
@@ -65,7 +65,7 @@ class VerificationController {
 
     public searchByVerification = async(Name: any) => {
         let returnData = {};
-        await Verification.find({name: {$regex: Name, $options: 'i'}})
+        await Verification(process.env.DB_NAME as string).find({name: {$regex: Name, $options: 'i'}})
         .limit(5)
         .then(async (res:any) => {
             console.log(res);
@@ -87,7 +87,7 @@ class VerificationController {
 
     public createVerification = async (Body: any) => {
         let returnData = {}
-        let Verifications = await new Verification({
+        let Verifications = await new (Verification(process.env.DB_NAME as string))({
             verificationId: nanoid(8),
             firstName: Body.firstName,
             lastName: Body.lastName,
@@ -127,7 +127,7 @@ class VerificationController {
 
     public updateVerification = async(VerificationId:any, body: any) => {
         let returnData = {}
-        await Verification.findOneAndUpdate({verificationId: VerificationId}, body, {new:true}).then(async (res: any) => {
+        await Verification(process.env.DB_NAME as string).findOneAndUpdate({verificationId: VerificationId}, body, {new:true}).then(async (res: any) => {
             console.log(res);
             if (!res || res.length === 0) {
                 returnData = {
@@ -147,7 +147,7 @@ class VerificationController {
 
     public deleteVerification = async(VerificationId: any) => {
         let returnData = {}
-        await Verification.findOneAndDelete({VerificationId: VerificationId}).then(async (res: any) => {
+        await Verification(process.env.DB_NAME as string).findOneAndDelete({VerificationId: VerificationId}).then(async (res: any) => {
             console.log(res);
             if (!res || res.length === 0) {
                 returnData = {
