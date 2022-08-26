@@ -19,10 +19,12 @@ class SendNotification {
   ) => {
     console.log(CustomerID);
     let token: any = [];
-    await FCMTokenModal.find()
+    await FCMTokenModal(process.env.DB_NAME as string)
+      .find()
       .then(async (data: any) => {
         let data1 = [];
         for (let i = 0; i < data.length; i++) {
+          //@ts-ignore
           await data1.push(data[i].Token);
         }
         console.log(data1);
