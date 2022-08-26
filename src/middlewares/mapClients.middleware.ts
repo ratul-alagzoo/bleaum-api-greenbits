@@ -18,7 +18,7 @@ export const mapClientsMiddleware = async (
       (req.path + "").includes("api-docs") ||
       (req.path + "").includes("favicon")
     ) {
-      console.log("Passed");
+      // console.log("Passed");
       return next();
     } else {
       const outletChainID = req.headers.outletchainid as string;
