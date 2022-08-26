@@ -12,18 +12,28 @@ export const mapClientsMiddleware = async (
   next: express.NextFunction
 ) => {
   try {
-    const outletChainID = req.headers.outletchainid as string;
-    const consumerID = req.headers.consumerid as string;
-    const key = `${outletChainID}|${consumerID}`;
-    if (!possibleClients[key]) {
-      return res.status(403).send("Invalid client info");
-    } else {
-      const path = `.env.${possibleClients[key]}`;
-      await dotenv.config({
-        path,
-        override: true,
-      });
+    // console.log("Path is:", req.path);
+
+    if (
+      (req.path + "").includes("api-docs") ||
+      (req.path + "").includes("favicon")
+    ) {
+      console.log("Passed");
       return next();
+    } else {
+      const outletChainID = req.headers.outletchainid as string;
+      const consumerID = req.headers.consumerid as string;
+      const key = `${outletChainID}|${consumerID}`;
+      if (!possibleClients[key]) {
+        return res.status(403).send("Invalid client info");
+      } else {
+        const path = `.env.${possibleClients[key]}`;
+        await dotenv.config({
+          path,
+          override: true,
+        });
+        return next();
+      }
     }
   } catch (e) {
     return res.status(500).send();
