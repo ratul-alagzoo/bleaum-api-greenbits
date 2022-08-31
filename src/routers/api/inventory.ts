@@ -9,7 +9,6 @@ class Inventory {
   constructor() {
     this.router.get(`${this.path}`, this.GetAllInventory);
     this.router.get(`${this.path}/paginated`, this.GetAllInventoryPaginated);
-    // this.router.get(`${this.path}/db`, this.GetAllInventoryInDB);
     this.router.get(`${this.path}/by`, this.GetInventoryBy);
     this.router.get(`${this.path}/deal`, this.GetInventoryByDeal);
     this.router.get(`${this.path}/id`, this.GetInventoryByID);

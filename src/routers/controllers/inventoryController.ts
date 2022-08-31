@@ -6,8 +6,6 @@ import PopularTrending from "../../models/popularNtrending";
 import CategoryController from "./categoryController";
 import BrandController from "./brandController";
 import ProductController from "./productController";
-import dotenv from "dotenv";
-
 class InventoryController {
   categoryController = new CategoryController();
   brandController = new BrandController();
@@ -22,12 +20,15 @@ class InventoryController {
   ) => {
     let returnData = {};
     console.log("body", productID, outletChainID, Body);
-    let product = await Product(process.env.DB_NAME as string).find({ productID: productID });
-    await Inventory(process.env.DB_NAME as string).findOneAndUpdate(
-      { productID: productID, outletChainID: outletChainID },
-      Body,
-      { new: true }
-    )
+    let product = await Product(process.env.DB_NAME as string).find({
+      productID: productID,
+    });
+    await Inventory(process.env.DB_NAME as string)
+      .findOneAndUpdate(
+        { productID: productID, outletChainID: outletChainID },
+        Body,
+        { new: true }
+      )
       .then(async (res: any) => {
         console.log(res);
         if (!res || res.length === 0) {
@@ -36,39 +37,6 @@ class InventoryController {
             data: "No Inventory found",
           };
         } else {
-          // for (let i = 0; i < product[0].category.length; i++) {
-          //     if ("categoryID" in product[0].category[i]) {
-
-          //         Category.find({ categoryID: product[0].category[i].categoryID, "countInventory.outletChainID": outletChainID }).then((cateRes) => {
-          //             if (cateRes.length) {
-          //             }
-          //             else {
-          //                 console.log('update one');
-          //                 Category.updateOne(
-          //                     { categoryID: product[0].category[i].categoryID },
-          //                     { $addToSet: { "countInventory": { "count": 1, "outletChainID": outletChainID } } }
-          //                 ).then(respond => {
-          //                     console.log('category counter', respond);
-          //                 })
-          //             }
-          //         })
-          //     }
-          // }
-          // if ("brandID" in product[0]) {
-          //     Brand.find({ brandID: product[0].brandID, "countInventory.outletChainID": Body.outletChainID }).then((brandRes) => {
-          //         if (brandRes.length) {
-          //         }
-          //         else {
-          //             console.log('update one');
-          //             Brand.updateOne(
-          //                 { brandID: product[0].brandID },
-          //                 { $addToSet: { "countInventory": { "count": 1, "outletChainID": outletChainID } } }
-          //             ).then(respond => {
-          //                 console.log('brand counter', respond);
-          //             })
-          //         }
-          //     })
-          // }
           returnData = {
             Message: "Success",
             data: res,
@@ -82,10 +50,11 @@ class InventoryController {
 
   public getFeaturedInventory = async (outletChainID: any) => {
     let returnData = {};
-    await Inventory(process.env.DB_NAME as string).find({
-      outletChainID: outletChainID,
-      featuredProduct: true,
-    })
+    await Inventory(process.env.DB_NAME as string)
+      .find({
+        outletChainID: outletChainID,
+        featuredProduct: true,
+      })
       .then(async (res: any) => {
         console.log(res);
         if (res.length === 0) {
@@ -107,7 +76,8 @@ class InventoryController {
   public getLowHighPrice = async (outletChainID: any, sort: any) => {
     let returnData = {};
     console.log(sort, "sort:");
-    await Inventory(process.env.DB_NAME as string).find({ outletChainID: outletChainID })
+    await Inventory(process.env.DB_NAME as string)
+      .find({ outletChainID: outletChainID })
       .sort(sort)
       .then(async (res: any) => {
         console.log(res);
@@ -129,7 +99,8 @@ class InventoryController {
 
   public getAllOutletInventory = async (outletChainID: any) => {
     let returnData = {};
-    await Inventory(process.env.DB_NAME as string).find({ outletChainID: outletChainID })
+    await Inventory(process.env.DB_NAME as string)
+      .find({ outletChainID: outletChainID })
       .then(async (res: any) => {
         // console.log(res);
         if (!res || res.length === 0) {
@@ -154,7 +125,8 @@ class InventoryController {
     let page = Page >= 1 ? Page : 1;
     page = page - 1;
 
-    await Inventory(process.env.DB_NAME as string).find({ outletChainID: outletChainID })
+    await Inventory(process.env.DB_NAME as string)
+      .find({ outletChainID: outletChainID })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page)
       .then(async (results) => {
@@ -175,10 +147,11 @@ class InventoryController {
 
   public searchInventory = async (outletChainID: any, name: any) => {
     let returnData = {};
-    await Inventory(process.env.DB_NAME as string).find({
-      outletChainID: outletChainID,
-      "product.name": { $regex: name, $options: "i" },
-    })
+    await Inventory(process.env.DB_NAME as string)
+      .find({
+        outletChainID: outletChainID,
+        "product.name": { $regex: name, $options: "i" },
+      })
       .then(async (res: any) => {
         console.log(res);
         if (!res || res.length === 0) {
@@ -207,7 +180,8 @@ class InventoryController {
     let page = Page >= 1 ? Page : 1;
     page = page - 1;
     console.log(brandID, "brand ID");
-    await Inventory(process.env.DB_NAME as string).find({ "product.brandID": brandID })
+    await Inventory(process.env.DB_NAME as string)
+      .find({ "product.brandID": brandID })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page)
       .then(async (res: any) => {
@@ -238,14 +212,18 @@ class InventoryController {
     let allCategories: any[] = [];
     console.log(dealId, "deal ID");
     try {
-      const deal = await Deals(process.env.DB_NAME as string).findOne({ dealId: dealId });
+      const deal = await Deals(process.env.DB_NAME as string).findOne({
+        dealId: dealId,
+      });
       if (deal) {
         console.log("deals solo", deal);
         if (deal.selectedProducts.length > 0) {
           for (let i = 0; i < deal.selectedProducts.length; i++) {
-            const solo = await Inventory(process.env.DB_NAME as string).findOne({
-              productID: deal.selectedProducts[i].productID,
-            });
+            const solo = await Inventory(process.env.DB_NAME as string).findOne(
+              {
+                productID: deal.selectedProducts[i].productID,
+              }
+            );
             allProducts.push(solo);
           }
         } else if (deal.selectedCategories.length > 0) {
@@ -295,7 +273,8 @@ class InventoryController {
     let page = Page >= 1 ? Page : 1;
     page = page - 1;
     console.log(categoryID, "category ID", Page);
-    await Inventory(process.env.DB_NAME as string).find({ "product.category.categoryID": categoryID })
+    await Inventory(process.env.DB_NAME as string)
+      .find({ "product.category.categoryID": categoryID })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page)
       .then(async (res: any) => {
@@ -352,13 +331,16 @@ class InventoryController {
     let returnData = {};
     let results: any[] = [];
     try {
-      await PopularTrending(process.env.DB_NAME as string).aggregate([{ $sortByCount: "$Details.productID" }])
+      await PopularTrending(process.env.DB_NAME as string)
+        .aggregate([{ $sortByCount: "$Details.productID" }])
         .then(async (res: any) => {
           console.log(res);
           for (let i = 0; i < res.length; i++) {
             try {
               console.log(res[i]._id);
-              const find = await Inventory(process.env.DB_NAME as string).findOne({ productID: res[i]._id });
+              const find = await Inventory(
+                process.env.DB_NAME as string
+              ).findOne({ productID: res[i]._id });
               console.log(find, "find");
               if (find) {
                 results.push(find);
@@ -390,17 +372,20 @@ class InventoryController {
     const date = +new Date() - 7 * 60 * 60 * 24 * 1000;
     let results: any[] = [];
 
-    await PopularTrending(process.env.DB_NAME as string).find({
-      timestamp: {
-        $gte: new Date(date),
-      },
-    })
+    await PopularTrending(process.env.DB_NAME as string)
+      .find({
+        timestamp: {
+          $gte: new Date(date),
+        },
+      })
       .then(async (res) => {
         console.log(res, "trending");
         for (let i = 0; i < res.length; i++) {
           try {
             console.log(res[i]._id);
-            const find = await Inventory(process.env.DB_NAME as string).findOne({ productID: res[i]._id });
+            const find = await Inventory(process.env.DB_NAME as string).findOne(
+              { productID: res[i]._id }
+            );
             console.log(find, "find");
             if (find) {
               results.push(find);
@@ -427,10 +412,11 @@ class InventoryController {
     let thcEnd: number = Body.thc ? Body.thc[1] + 1 : 0;
     if (!Body.thc || Body.thc === 0) {
       console.log("cbd");
-      await Inventory(process.env.DB_NAME as string).find({
-        outletChainID: outletChainID,
-        "product.cbd": { $lt: cbdEnd, $gt: cbdIni },
-      })
+      await Inventory(process.env.DB_NAME as string)
+        .find({
+          outletChainID: outletChainID,
+          "product.cbd": { $lt: cbdEnd, $gt: cbdIni },
+        })
         .then(async (res: any) => {
           console.log(res);
           if (!res || res.length === 0) {
@@ -448,10 +434,11 @@ class InventoryController {
         .catch((e) => console.log(e));
     } else if (!Body.cbd || Body.cbd === 0) {
       console.log("thc");
-      await Inventory(process.env.DB_NAME as string).find({
-        outletChainID: outletChainID,
-        "product.thc": { $lt: thcEnd, $gt: thcIni },
-      })
+      await Inventory(process.env.DB_NAME as string)
+        .find({
+          outletChainID: outletChainID,
+          "product.thc": { $lt: thcEnd, $gt: thcIni },
+        })
         .then(async (res: any) => {
           console.log(res);
           if (!res || res.length === 0) {
@@ -469,11 +456,12 @@ class InventoryController {
         .catch((e) => console.log(e));
     } else {
       console.log("both");
-      await Inventory(process.env.DB_NAME as string).find({
-        outletChainID: outletChainID,
-        "product.thc": { $lt: thcEnd, $gt: thcIni },
-        "product.cbd": { $lt: cbdEnd, $gt: cbdIni },
-      })
+      await Inventory(process.env.DB_NAME as string)
+        .find({
+          outletChainID: outletChainID,
+          "product.thc": { $lt: thcEnd, $gt: thcIni },
+          "product.cbd": { $lt: cbdEnd, $gt: cbdIni },
+        })
         .then(async (res: any) => {
           console.log(res);
           if (!res || res.length === 0) {
@@ -664,7 +652,8 @@ class InventoryController {
   public getInventoryByID = async (ID: any) => {
     let returnData = {};
     // console.log(brandID, 'brand ID')
-    await Inventory(process.env.DB_NAME as string).findOne({ productID: ID })
+    await Inventory(process.env.DB_NAME as string)
+      .findOne({ productID: ID })
       .then(async (res: any) => {
         // console.log(res);
         if (res.length === 0) {
